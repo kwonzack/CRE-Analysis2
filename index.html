@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asset Management & Investment Portfolio</title>
+    <style>
+        /* CSS Settings - 모던하고 전문적인 톤 앤 매너 */
+        :root {
+            --primary: #1A252C; /* 헤더 및 주요 배경색 */
+            --secondary: #34495e; /* 카드 서브 타이틀 */
+            --accent: #2980b9; /* 버튼 및 강조색 */
+            --bg: #f4f7f6;
+            --text: #333;
+        }
+        body { 
+            font-family: 'Helvetica Neue', Arial, sans-serif; 
+            background: var(--bg); 
+            color: var(--text); 
+            margin: 0; 
+            line-height: 1.6;
+        }
+        header { 
+            background: var(--primary); 
+            color: white; 
+            padding: 1.5rem 2rem; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+        }
+        header h1 { margin: 0; font-size: 1.5rem; letter-spacing: 1px; }
+        .aum-display { font-size: 1.2rem; font-weight: bold; }
+        
+        .container { max-width: 1200px; margin: 2rem auto; padding: 0 1rem; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; }
+        .card { background: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .card h3 { 
+            margin-top: 0; 
+            color: var(--secondary); 
+            border-bottom: 2px solid var(--accent); 
+            padding-bottom: 0.5rem; 
+            font-size: 1.1rem;
+        }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+        th, td { padding: 0.85rem; text-align: left; border-bottom: 1px solid #e0e0e0; font-size: 0.95rem; }
+        th { background-color: #f8f9fa; color: var(--secondary); }
+        
+        .input-group { margin-bottom: 15px; }
+        .input-group label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 0.9rem; }
+        .input-group input { 
+            width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; 
+        }
+        
+        button { 
+            background: var(--accent); 
+            color: white; 
+            border: none; 
+            padding: 0.75rem 1.5rem; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            font-weight: bold;
+            width: 100%;
+            transition: background 0.3s;
+        }
+        button:hover { background: #1f6391; }
+        #calc-result { margin-top: 15px; font-weight: bold; text-align: center; font-size: 1.1rem; color: var(--primary); }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Asset Management & Investment</h1>
+        <div class="aum-display">Total AUM: ₩15,500,000,000</div>
+    </header>
+
+    <div class="container">
+        <section class="grid">
+            <div class="card">
+                <h3>투자 포트폴리오 요약 (Portfolio Overview)</h3>
+                <p>목표 수익률(Target Yield): <strong style="color: var(--accent);">8.5%</strong></p>
+                <p>현재 운용 자산(Active Assets): <strong>4건</strong></p>
+                <p>전월 대비 가치 상승: <strong>+1.2%</strong></p>
+            </div>
+            <div class="card">
+                <h3>Value-add 파이프라인 (Pipeline)</h3>
+                <p>검토 중인 유휴부지/노후자산: <strong>2건</strong></p>
+                <p>최유효 개발 기획 단계: <strong>1건</strong></p>
+                <p>Exit 전략 수립 완료: <strong>1건</strong></p>
+            </div>
+        </section>
+
+        <section style="margin-top: 2rem;">
+            <div class="card">
+                <h3>주요 투자 자산 목록 (Asset Portfolio)</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>자산명 (Asset)</th>
+                            <th>유형 (Type)</th>
+                            <th>상태 (Status)</th>
+                            <th>예상 수익률 (ROI)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="asset-table-body">
+                        </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="grid" style="margin-top: 2rem;">
+             <div class="card" style="max-width: 500px; margin: 0 auto;">
+                <h3>간편 타당성 분석 (Feasibility Calculator)</h3>
+                <div class="input-group">
+                    <label>매입가 / 총 투자비 (원):</label>
+                    <input type="number" id="purchasePrice" value="5000000000" placeholder="예: 5000000000">
+                </div>
+                <div class="input-group">
+                    <label>예상 연 순수익 [NOI] (원):</label>
+                    <input type="number" id="noi" value="250000000" placeholder="예: 250000000">
+                </div>
+                <button onclick="calculateCapRate()">Cap Rate 계산</button>
+                <div id="calc-result"></div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // 에디터에서 이 배열(assets)의 내용만 수정하면 웹페이지 내용이 바뀝니다.
+        const assets = [
+            { name: "도심권 노후 오피스", type: "Value-add / Office", status: "리모델링 진행 중", roi: "7.2%" },
+            { name: "성수동 유휴부지 개발", type: "Development / Retail", status: "인허가 및 설계 검토", roi: "12.0%" },
+            { name: "라이프스타일 호텔 전환 프로젝트", type: "Value-add / Hospitality", status: "공간 기획 및 브랜딩 완료", roi: "9.5%" },
+            { name: "수도권 물류창고 부지", type: "Core+ / Industrial", status: "매입 협상 중", roi: "6.8%" }
+        ];
+
+        // 테이블 자동 생성 로직
+        const tbody = document.getElementById('asset-table-body');
+        assets.forEach(asset => {
+            const row = `<tr>
+                <td><strong>${asset.name}</strong></td>
+                <td>${asset.type}</td>
+                <td>${asset.status}</td>
+                <td style="color: var(--accent); font-weight: bold;">${asset.roi}</td>
+            </tr>`;
+            tbody.innerHTML += row;
+        });
+
+        // Cap Rate 산출 로직
+        function calculateCapRate() {
+            const price = parseFloat(document.getElementById('purchasePrice').value);
+            const noi = parseFloat(document.getElementById('noi').value);
+            const resultDiv = document.getElementById('calc-result');
+
+            if(price > 0 && noi >= 0) {
+                const capRate = ((noi / price) * 100).toFixed(2);
+                resultDiv.innerHTML = `예상 Cap Rate: <span style="font-size: 1.4rem; color: #27ae60;">${capRate}%</span>`;
+            } else {
+                resultDiv.innerText = "가격을 올바르게 입력해주세요.";
+                resultDiv.style.color = "red";
+            }
+        }
+    </script>
+
+</body>
+</html>
